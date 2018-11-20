@@ -346,7 +346,8 @@ namespace HoloToolkit.Unity.Collections
 
                         //Debug.Log("+++CellCounter: " + cellCounter);
 
-                        nodeGrid[cellCounter] = new Vector3((c * CellWidth) - startOffsetX + _halfCell.x, -(r * CellHeight) + startOffsetY - _halfCell.y, -0.5f) + (Vector3)((NodeList[cellCounter])).Offset;
+                        //nodeGrid[cellCounter] = new Vector3((c * CellWidth) - startOffsetX + _halfCell.x, -(r * CellHeight) + startOffsetY - _halfCell.y, -0.5f) + (Vector3)((NodeList[cellCounter])).Offset;
+                        nodeGrid[cellCounter] = new Vector3((c * CellWidth) - startOffsetX + _halfCell.x, -(r * CellHeight) + startOffsetY - _halfCell.y, -0.01f) + (Vector3)((NodeList[cellCounter])).Offset;
                         //nodeGrid[cellCounter] = new Vector3((c * CellWidth) - startOffsetX + _halfCell.x, -(r * CellHeight) + startOffsetY - _halfCell.y, 0f);
                         //nodeGrid[cellCounter] = new Vector3(((c * CellWidth) - startOffsetX + _halfCell.x) * (float)xOffset, (-(r * CellHeight) + startOffsetY - _halfCell.y) * (float)yOffset, -1f);
                         //nodeGrid[cellCounter] = new Vector3(((c * CellWidth) - startOffsetX + _halfCell.x) * (float)xOffset, (-(r * CellHeight) + startOffsetY - _halfCell.y) * (float)yOffset, -0f);

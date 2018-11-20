@@ -11,7 +11,9 @@ namespace RosSharp.RosBridgeClient
 
         //zum Testen eingefügt: Hier sollen die Namen der Nodes gespeichert werden.
         //public static string[] nodenames = new string[14];
-        public static string[] nodenames = new string[9];
+        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
+        public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
         public static string[] topicnames;
         //private bool readyForeNodeDetails = false;
         private string currentNode;
@@ -40,7 +42,9 @@ namespace RosSharp.RosBridgeClient
             //Debug.Log("////////////////////////nodenames: " + nodenames.Length);
 
 
-            script.updateToolbox(nodenames);
+            //script.updateToolbox(nodenames);
+            //wir erstellen nodes aus den Nodenamen, die wir uns geben lassen
+            nodeManager.generateNodes(nodenames);
 
         }
 

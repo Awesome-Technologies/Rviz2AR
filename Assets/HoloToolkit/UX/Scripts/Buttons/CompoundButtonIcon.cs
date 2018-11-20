@@ -167,7 +167,7 @@ namespace HoloToolkit.Unity.Buttons
                 // Use the default mesh for override icons
                 targetIconRenderer.enabled = true;
                 IconMeshFilter.sharedMesh = Profile.IconMesh;
-                IconMeshFilter.transform.localScale = Vector3.one;
+                //IconMeshFilter.transform.localScale = Vector3.one;
                 instantiatedMaterial.mainTexture = iconOverride;
                 return;
             }
