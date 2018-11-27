@@ -11,11 +11,12 @@ namespace RosSharp.RosBridgeClient
 
         //zum Testen eingefügt: Hier sollen die Namen der Nodes gespeichert werden.
         //public static string[] nodenames = new string[14];
-        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
-        public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+        public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
+        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
         //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
         public static string[] topicnames;
         //private bool readyForeNodeDetails = false;
+        private bool readyForeTopicType = false;
         private string currentNode;
 
         public LinkedList<ROSNode> nodelist = new LinkedList<ROSNode>();
@@ -37,6 +38,9 @@ namespace RosSharp.RosBridgeClient
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicsRequest, rosapi.TopicsResponse>("/rosapi/topics", ServiceCallHandler, new rosapi.TopicsRequest());
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
 
+            GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
+
+
             //GetComponent<RosConnector>().RosSocket.CallService<rosapi.NodeDetailsRequest, rosapi.NodeDetailsResponse>("/rosapi/node_details", ServiceCallHandler, new rosapi.NodeDetailsRequest("/gazebo"));
 
             //Debug.Log("////////////////////////nodenames: " + nodenames.Length);
@@ -51,13 +55,15 @@ namespace RosSharp.RosBridgeClient
         // Update is called once per frame
         void Update()
         {
+            
             /*
-            if (readyForeNodeDetails)
+            if (readyForeTopicType)
             {
-                GetNodeInfo();
+                readyForeTopicType = false;
+                GetTopicType();
             }
             */
-
+            
         }
 
 
@@ -70,12 +76,36 @@ namespace RosSharp.RosBridgeClient
             for (int i = 0; i < message.topics.Length; i++)
             {
                 Debug.Log("ROS topic: " + topicnames[i]);
-            }
+                //GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
 
+            }
+            readyForeTopicType = true;
             //Debug.Log("+++++ That were the Topics: ++++++++");
         }
 
-        private void ServiceCallHandler(rosapi.NodesResponse message)
+
+
+        
+        private void GetTopicType()
+        {
+            for (int i = 0; i < topicnames.Length; i++)
+            {
+                Debug.Log("ROS Topic: " + topicnames[i]);
+                GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
+
+            }
+
+        }
+
+        private void ServiceCallHandler(rosapi.TopicTypeResponse message)
+        {
+            Debug.Log("Hat den Typ: "+ message.type);
+        }
+
+        
+
+
+            private void ServiceCallHandler(rosapi.NodesResponse message)
         {
             //Debug.Log("+++++Here comes the Nodes: +++++");
             nodenames = message.nodes;
@@ -87,17 +117,19 @@ namespace RosSharp.RosBridgeClient
 
             }
 
-            //Debug.Log("////////////////////////nodenames: " + nodenames.Length);
-            //GetComponent<ObjectCollectionNodes>().createNodes(nodenames);
-            //GameObject.FindGameObjectWithTag("Node_toolbox").GetComponent<ObjectCollectionNodes>().createNodes(nodenames);
-            script.updateToolbox(nodenames);
-            nodeManager.generateNodes(nodenames);
-            //readyForeNodeDetails = true;
+            
 
 
 
         }
 
+
+
+
+
+
+
+        /*
         private void ServiceCallHandler(rosapi.NodeDetailsResponse message)
         {
             Debug.Log("--------------Node Details: ");
@@ -117,6 +149,7 @@ namespace RosSharp.RosBridgeClient
 
 
         }
+        */
 
         private void ServiceCallHandler(rosapi.GetParamResponse message)
         {
@@ -124,6 +157,7 @@ namespace RosSharp.RosBridgeClient
             Debug.Log("ROS distro: " + message.value);
         }
 
+        /*
         private void GetNodeInfo()
         {
             for (int i = 0; i < nodenames.Length; i++)
@@ -144,6 +178,7 @@ namespace RosSharp.RosBridgeClient
             }
             
         }
+        */
     }
 }
 

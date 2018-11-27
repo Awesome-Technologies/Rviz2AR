@@ -192,21 +192,8 @@ namespace HoloToolkit.Unity.Collections
 
                 //Destroy(emptyNodes[i].transform.gameObject);
             }
-            /*
-            Debug.Log("+++++ NodeList.COunt: " + NodeList.Count);
-            for (int i = 0; i < NodeList.Count; i++)
-            {
-                Debug.Log("I have: " + NodeList[i].Name);
-            }
-            */
 
-            //emptyNodes.Clear();
-            Debug.Log("+++++ EmptyNodes.COunt: " + emptyNodes.Count);
-
-            for (int i = 0; i < emptyNodes.Count; i++)
-            {
-                Debug.Log("+++++ The Following empty Nodes: " + emptyNodes[i].Name);
-            }
+            emptyNodes.Clear();
 
 
             // Check when children change and adjust
@@ -255,7 +242,7 @@ namespace HoloToolkit.Unity.Collections
                     {
 
                         //return c1.Name.CompareTo("emptyGameObjectNode");
-                        if (c2.Name == "emptyGameObjectNode")
+                        if (c2.Name == "emptyNode")
                         {
                             return -1;
                         }
@@ -269,7 +256,7 @@ namespace HoloToolkit.Unity.Collections
             }
 
 
-                
+
             _columns = Columns;
             _halfCell = new Vector2(CellWidth * 0.5f, CellHeight * 0.5f);
             _circumference = 2f * Mathf.PI * Radius;
@@ -310,8 +297,8 @@ namespace HoloToolkit.Unity.Collections
             float startOffsetY;
 
             nodeGrid = new Vector3[Rows * _columns];
-            Debug.Log("+++ Nodegrid.Length " + nodeGrid.Length);
-            Debug.Log("+++ Nodelist.Length " + NodeList.Count);
+            //Debug.Log("+++ Nodegrid.Length " + nodeGrid.Length);
+            //Debug.Log("+++ Nodelist.Length " + NodeList.Count);
 
 
             // Now lets lay out the grid
@@ -351,20 +338,21 @@ namespace HoloToolkit.Unity.Collections
                         //nodeGrid[cellCounter] = new Vector3((c * CellWidth) - startOffsetX + _halfCell.x, -(r * CellHeight) + startOffsetY - _halfCell.y, 0f);
                         //nodeGrid[cellCounter] = new Vector3(((c * CellWidth) - startOffsetX + _halfCell.x) * (float)xOffset, (-(r * CellHeight) + startOffsetY - _halfCell.y) * (float)yOffset, -1f);
                         //nodeGrid[cellCounter] = new Vector3(((c * CellWidth) - startOffsetX + _halfCell.x) * (float)xOffset, (-(r * CellHeight) + startOffsetY - _halfCell.y) * (float)yOffset, -0f);
-                        
+
                     }
                     cellCounter++;
 
                 }
             }
         }
-        //Hier gebe ich jetzt den Kompletten Innhalt des NodeGrid wieder
+
 
         private void LayoutChildren()
         {
             Vector3 newPos = Vector3.zero;
 
-            //Debug.Log("+++++++++++ LayoutChildren() ++++++++++++++ ");
+            Debug.Log("+++++++++++ LayoutChildren() ++++++++++++++ ");
+            Debug.Log("+NodeLost: " + NodeList.Count);
             for (int i = 0; i < NodeList.Count; i++)
             {
                 newPos = nodeGrid[i];
@@ -468,7 +456,7 @@ namespace HoloToolkit.Unity.Collections
 
 
             }
-            
+
 
             //3.
             this.UpdateCollection();
@@ -485,7 +473,7 @@ namespace HoloToolkit.Unity.Collections
             //Debug.Log("--We have width and hight: " + Width +" / "+Height);
             //this.GetComponent<Transform>().localScale = prefab.transform.localScale;
             //this.GetComponent<Transform>().localScale.x = this.GetComponent<Transform>().localScale.x * Width;
-            
+
             //addOneEmptyNodeAtEnd();
 
             //resizeParent();
@@ -543,6 +531,14 @@ namespace HoloToolkit.Unity.Collections
             //return this.transform.InverseTransformDirection(nodeGrid[children-1]);
             //Debug.Log("++++EmptyNodeName+++: "+ NodeList[NodeList.Count - 1].Name);
             //Debug.Log("++++EmptyNodePosition+++: " + NodeList[NodeList.Count - 1].transform.position);
+            for (int i = 0; i < NodeList.Count; i++)
+            {
+                if(NodeList[i].Name == "emptyNode")
+                {
+                    return NodeList[i].transform.position;
+                }
+            }
+
             return NodeList[NodeList.Count - 1].transform.position;
         }
 
@@ -560,5 +556,46 @@ namespace HoloToolkit.Unity.Collections
                 //Instantiate(prefab, this.transform);
             }
         }
+
+        public void deleteAllNodes()
+        {
+            NodeList.Clear();
+
+            var children = new List<GameObject>();
+            foreach (Transform child in transform) children.Add(child.gameObject);
+            //children.ForEach(child => child.GetComponent<Transform> = null);
+            children.ForEach(child => DestroyImmediate(child));
+
+
+
+            //Debug.Log("--Toolbox Kinder nach Delete: " + transform.childCount);
+            //Debug.Log("--Neue Nodeliste: " + NodeList.Count);
+
+        }
+
+
+        public void insertEmpteOnRemoveposition(Vector3 posInGrid)
+        {
+            for (int i = 0; i < NodeList.Count; i++)
+            {
+                //Wir gehen durch die Nodeliste durch und schauen, welche Node gerade entfernt wurde
+                if (NodeList[i].transform.parent == null )
+                {
+                    GameObject empty = new GameObject();
+                    empty.name = "emptyNode";
+                    empty.transform.parent = this.transform;
+                    empty.transform.localPosition = posInGrid;
+                    
+                    NodeList[i].NodeGameObject = empty;
+                    NodeList[i].transform = empty.transform;
+                    NodeList[i].displayedInToolbox = true;
+                    
+                    NodeList[i].Name = empty.name;
+                    
+                }
+            }
+        }
+
     }
+
 }

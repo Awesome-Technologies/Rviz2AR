@@ -16,10 +16,14 @@ public class UpDownButton : MonoBehaviour {
 
     private Button button;
 
+    private NodeManager nodeManager;
+
     // Use this for initialization
     void Start () {
-		
-	}
+
+        nodeManager = GameObject.Find("Rviz2AR_ToolBox").GetComponent<NodeManager>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -40,11 +44,13 @@ public class UpDownButton : MonoBehaviour {
         if (isUpButton)
         {
             Debug.Log("KlickedUpButtttooooonnnnn");
+            nodeManager.upDownButtonPressed("up");
         }
 
         if (isDownButton)
         {
             Debug.Log("KlickedDOWNButtttooooonnnnn");
+            nodeManager.upDownButtonPressed("down");
         }
         
     }

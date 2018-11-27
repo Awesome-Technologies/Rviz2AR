@@ -11,6 +11,7 @@ namespace HoloToolkit.Unity.Collections
     [System.Serializable]
     public class CollectionNode
     {
+        public GameObject NodeGameObject;
         public bool inToolbox = true;
         public bool displayedInToolbox = false;
         public string Name;

@@ -6,9 +6,14 @@ using UnityEngine;
 public class NodeManager : MonoBehaviour {
 
     /// <summary>
-    /// List of objects with generated data on the object.
+    /// Liste mit allen Nodes, die in der Toolbox angezeigt werden können
     /// </summary>
     private List<CollectionNode> NodeList = null;
+
+    /// <summary>
+    /// Liste mit allen Nodes, die außerhalb der Toolbox abgelegt wurden
+    /// </summary>
+    private List<CollectionNode> NodesOutside = null;
 
     /// <summary>
     /// Gibt an, wieviele Seiten an Nodes in der Toolox wir haben
@@ -26,9 +31,16 @@ public class NodeManager : MonoBehaviour {
     private int ElementsToDisplayInToolbox = 9;
 
     /// <summary>
+    /// Start und finish geben an, welche Elemente der NodeListe durchlaufen werden, um Nodes darzustellen.
+    /// </summary>
+    int start;
+    int finish;
+
+    /// <summary>
     /// Variable des Scriptes, das für die Darstellung und Sortierung der Nodes zuständig ist.
     /// </summary>
     private ObjectCollectionNodes toolboxNodes;
+    private GameObject toolbox;
 
 
 
@@ -36,6 +48,9 @@ public class NodeManager : MonoBehaviour {
     void Start () {
 
         toolboxNodes = GameObject.FindGameObjectWithTag("testCubeToolbox").GetComponent<ObjectCollectionNodes>();
+        toolbox = GameObject.FindGameObjectWithTag("testCubeToolbox");
+
+        NodesOutside = new List<CollectionNode>();
 
     }
 	
@@ -84,13 +99,32 @@ public class NodeManager : MonoBehaviour {
 
         }
 
+        addEmptyNode();
+
         
 
         updateSeitenanzahl();
         displayNodes();
 
         Debug.Log("--Länge der Nodeliste: " + NodeList.Count);
-        toolboxNodes.UpdateCollection();
+        //toolboxNodes.UpdateCollection();
+    }
+
+    /// <summary>
+    /// An das Ende der List wird eine leere Node angehängt
+    /// Diese Node wird dazu benutzt um Nodes, die wieder in die Toolbox angehängt werden richtig darzustellen.
+    /// </summary>
+    public void addEmptyNode()
+    {
+        //hier müssen wir eigentlich noch irgendwie den Typ von den Nodes abfragen.
+
+        CollectionNode node = new CollectionNode();
+
+        node.Name = "emptyNode";
+        node.transform = null;
+        node.inToolbox = true;
+        node.displayedInToolbox = false;
+        NodeList.Add(node);
     }
 
     /// <summary>
@@ -100,27 +134,55 @@ public class NodeManager : MonoBehaviour {
     /// </summary>
     public void updateSeitenanzahl()
     {
-        Seitenzahl = (NodeList.Count % ElementsToDisplayInToolbox) + 1;
+        Debug.Log("NodeList.Count: " + NodeList.Count);
+        Debug.Log("ElementsToDisplayInToolbox: " + ElementsToDisplayInToolbox);
+        //Seitenzahl = (NodeList.Count % ElementsToDisplayInToolbox) + 1;
+        Seitenzahl = (NodeList.Count + ElementsToDisplayInToolbox-1)/ ElementsToDisplayInToolbox ;
+        Debug.Log("Seitenzahl: " + Seitenzahl);
     }
 
     public void displayNodes()
     {
         deleteOldNodes();
 
-        for (int i= (currentSite - 1)* ElementsToDisplayInToolbox; i< currentSite * ElementsToDisplayInToolbox; i++)
+        //Debug.Log("currentSite: "+  currentSite);
+        //Debug.Log("start: "+  start);
+
+        start = (currentSite - 1) * ElementsToDisplayInToolbox;
+        if(currentSite * ElementsToDisplayInToolbox > NodeList.Count)
         {
-            Debug.Log("i und Nodename:" + i + " / " + NodeList[i].Name);
-            if (i >= NodeList.Count)
+            finish = NodeList.Count;
+        }
+        else
+        {
+            finish = currentSite * ElementsToDisplayInToolbox;
+        }
+
+        //Debug.Log("finish: " + finish);
+
+        for (int i= start; i< finish; i++)
+        {
+            //Debug.Log("i und Nodename:" + i + " / " + NodeList[i].Name);
+
+            if (NodeList[i].Name == "emptyNode")
             {
-                break;
+                GameObject empty = new GameObject();
+                empty.name = "emptyNode";
+
+                NodeList[i].NodeGameObject = empty;
+                NodeList[i].transform = empty.transform;
+                NodeList[i].displayedInToolbox = true;
+                NodeList[i].transform.parent = toolboxNodes.transform;
             }
             else
             {
                 GameObject prefab = GameObject.Find("ButtonHolographic");
                 GameObject clone = Instantiate(prefab, this.transform);
+                clone.name = NodeList[i].Name;
                 clone.GetComponentInChildren<TextMesh>().text = NodeList[i].Name;
-                Debug.Log("Transform der Node: " + clone.transform.ToString());
+                //Debug.Log("Transform der Node: " + clone.transform.ToString());
 
+                NodeList[i].NodeGameObject = clone;
                 NodeList[i].transform = clone.transform;
                 NodeList[i].displayedInToolbox = true;
 
@@ -128,8 +190,10 @@ public class NodeManager : MonoBehaviour {
 
                 //NodesToDisplay.Add(NodeList[i]);
                 NodeList[i].transform.parent = toolboxNodes.transform;
+                //Debug.Log("--Neue Nodeliste: " + toolboxNodes.NodeList.Count);
             }
         }
+        //Debug.Log("--Toolbox Kinder: " + toolboxNodes.transform.childCount);
         toolboxNodes.UpdateCollection();        
     }
 
@@ -151,8 +215,101 @@ public class NodeManager : MonoBehaviour {
             }
 
         }
+
+        displayNodes();
+        //deleteOldNodes();
+   
+
+
+
+    }
+
+    public void deleteOldNodes()
+    {
+        //Debug.Log("--Wir löschen die alten Nodes");
+
+        //toolboxNodes.deleteAllNodes();
+
+
+        
+        for (int i = 0; i< NodeList.Count; i++)
+        {
+            if (NodeList[i].displayedInToolbox)
+            {
+                //Debug.Log("--Die Node mit dem Namen: " + NodeList[i].Name + " Wird in der Toolbox angezeigt ");
+                NodeList[i].displayedInToolbox = false;
+                NodeList[i].transform = null;
+                //Debug.Log("--Neuer Transform: "+ NodeList[i].transform);
+                DestroyImmediate(NodeList[i].NodeGameObject);
+       
+                
+
+            }
+        }
+
+        toolboxNodes.deleteAllNodes();
+
+
+        toolboxNodes.NodeList.Clear();
+
+
+        //Debug.Log("--Toolbox Kinder nach Delete: " + toolboxNodes.transform.childCount);
+        //Debug.Log("--Neue Nodeliste: " + toolboxNodes.NodeList.Count);
         
 
     }
+
+    /// <summary>
+    /// Wenn eine Node aus der Toolbox genommen und in die Umgebung eingefügt wird,
+    /// dann wird sie aus der Nodelist entfernt und in die Liste der Nodes außerhalb der Toolbox gelegt
+    /// </summary>
+    public void signOutToolbox(string name)
+    {
+        for (int i = start; i < finish; i++)
+        {
+            if(NodeList[i].Name == name)
+            {
+                NodesOutside.Add(NodeList[i]);
+                NodeList.Remove(NodeList[i]);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Wenn eine Node aus der Toolbox genommen und in die Umgebung eingefügt wird,
+    /// dann wird sie aus der Nodelist entfernt und in die Liste der Nodes außerhalb der Toolbox gelegt
+    /// </summary>
+    public void signInToolbox(string name)
+    {
+        for (int i = 0; i < NodesOutside.Count; i++)
+        {
+            if (NodesOutside[i].Name == name)
+            {
+                NodeList.Add(NodesOutside[i]);
+                NodesOutside.Remove(NodesOutside[i]);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Wenn eine Node aus der Umgebung in die Toolbox gelegt wird, dann
+    /// dann wird sie aus der Nodelist entfernt und in die Liste der Nodes außerhalb der Toolbox gelegt
+    /// </summary>
+    public void openLastSite()
+    {
+        Debug.Log("openLastSite");
+        currentSite = Seitenzahl;
+        displayNodes();
+
+    }
+
+    public void updateCurrentSite()
+    {
+        Debug.Log("updateCurrentSite");
+        displayNodes();
+    }
+
 
 }

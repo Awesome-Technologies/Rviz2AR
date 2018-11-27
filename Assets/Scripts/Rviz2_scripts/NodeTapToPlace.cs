@@ -57,8 +57,13 @@ namespace HoloToolkit.Unity.SpatialMapping
 
         private GameObject toolbox;
 
+        private NodeManager nodeManager;
+
         protected virtual void Start()
         {
+
+            nodeManager = GameObject.Find("Rviz2AR_ToolBox").GetComponent<NodeManager>();
+
             if (PlaceParentOnTap)
             {
                 ParentGameObjectToPlace = GetParentToPlace();
@@ -174,34 +179,11 @@ namespace HoloToolkit.Unity.SpatialMapping
         {
             Debug.Log("#################### Ich Klicke!!!!!!!!!!!!#################");
 
-            //-- Wenn die Node in der TOolbox ist, dann lösen wir sie aus der Toolbox heraus
-            if (nodeIsInToolbox)
-            {
-                GetComponent<NodeToParentMapper>().detachFromParent();
-                nodeIsInToolbox = false;
-                GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
-
-            }
-            else if(toolbox.GetComponent<ToolboxRaycaster>().lookingAtToolbox())
-            {
-
-                GetComponent<NodeToParentMapper>().attachNodeToToolbox();
-                nodeIsInToolbox = true;
-            }
-
-            
             // On each tap gesture, toggle whether the user is in placing mode.
             IsBeingPlaced = !IsBeingPlaced;
 
-            //--während wir dabei sind die Node zu plazieren machen wir das TagAlong der Toolbox aus, damit sie uns nicht ständig hinterherfliegt
-            if (IsBeingPlaced)
-            {
-                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = false;
-            }
-            else
-            {
-                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = true;
-            }
+            
+            
 
             HandlePlacement();
             eventData.Use();
@@ -211,10 +193,64 @@ namespace HoloToolkit.Unity.SpatialMapping
         {
             if (IsBeingPlaced)
             {
+                //--während wir dabei sind die Node zu plazieren machen wir das TagAlong der Toolbox aus, damit sie uns nicht ständig hinterherfliegt
+                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = false;
+
+                //-- Wenn die Node in der TOolbox ist, dann lösen wir sie aus der Toolbox heraus
+                if (nodeIsInToolbox)
+                {
+                    GetComponent<NodeToParentMapper>().detachFromParent();
+                    nodeIsInToolbox = false;
+
+                    //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
+                    if(this.name == "1"&& this.transform.parent == null)
+                    {
+                        var image = GameObject.Find("ImagePlane").GetComponent<Transform>();
+                        image.rotation = Quaternion.Euler((image.eulerAngles.x)*-1 - this.transform.eulerAngles.x, this.transform.eulerAngles.y, 0);
+                        GameObject.Find("ImagePlane").GetComponent<Transform>().position = this.transform.position;
+                        //GameObject.Find("ImagePlane").GetComponent<Transform>().rotation = this.transform.rotation;
+                        GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
+                    }
+                    
+                
+                //Wenn die Node außerhalb der Toolbox ist
+                }else if (!nodeIsInToolbox)
+                {
+                    //--Wir machen die Letzte Seite in der Toolbox auf, damit wir die Node in die Toolbox hineinlegen können.
+                    nodeManager.openLastSite();
+                }
+                /*
+                else if (toolbox.GetComponent<ToolboxRaycaster>().lookingAtToolbox())
+                {
+                    Debug.Log(" WIR FÜGEN DIE ");
+                    GetComponent<NodeToParentMapper>().attachNodeToToolbox();
+                    nodeIsInToolbox = true;
+                }
+                */
+
                 StartPlacing();
             }
             else
             {
+                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = true;
+
+                if (toolbox.GetComponent<ToolboxRaycaster>().lookingAtToolbox())
+                {
+                    Debug.Log(" WIR FÜGEN DIE ");
+                    GetComponent<NodeToParentMapper>().attachNodeToToolbox();
+                    nodeIsInToolbox = true;
+                }
+                //Die Node wurde davor in die Toolbox gelegt
+                if (nodeIsInToolbox)
+                {
+                    
+                }
+                //Die Node wurde davor aus der Toolbox genommen und in die Umgebung eingefügt
+                else if (!nodeIsInToolbox)
+                {
+                    nodeManager.updateCurrentSite();
+                }
+
                 StopPlacing();
             }
         }
@@ -236,6 +272,8 @@ namespace HoloToolkit.Unity.SpatialMapping
 
             ToggleSpatialMesh();
             AttachWorldAnchor();
+
+
         }
 
         private void AttachWorldAnchor()
