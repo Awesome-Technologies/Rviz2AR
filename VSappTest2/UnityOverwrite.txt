@@ -9,7 +9,7 @@ MixedRealityToolkit-Unity.sln: 5A7C76C4024D58002346FA5E5CC19047
 MixedRealityToolkit-Unity\App.cs: D815CB6D35880CE416DC790956C940A6
 MixedRealityToolkit-Unity\AssemblyConverterArgs.txt: 02C478F90E13605E20B4537BB1432FDF
 MixedRealityToolkit-Unity\MixedRealityToolkit-Unity.csproj: D1657E13B86C54B15D5F59B43630B300
-MixedRealityToolkit-Unity\MixedRealityToolkit-Unity.csproj.user: BEFB8AC4886C4CFDD3C68445D6F19B04
+MixedRealityToolkit-Unity\MixedRealityToolkit-Unity.csproj.user: modified
 MixedRealityToolkit-Unity\Package.appxmanifest: EF4AAD60B1B5836795711DE5FE71ECAB
 MixedRealityToolkit-Unity\project.json: 1D02BC64BAC0D041019673A1C4C51737
 MixedRealityToolkit-Unity\Assets\SplashScreen.scale-200.png: A85C1D7624B6902CF8CEBD6F0200A826
@@ -19,4 +19,5 @@ MixedRealityToolkit-Unity\Assets\Square44x44Logo.targetsize-24.png: 156637F7B536
 MixedRealityToolkit-Unity\Assets\Square44x44Logo.targetsize-24_altform-unplated.png: 156637F7B5363E983E7A46D8E533A23D
 MixedRealityToolkit-Unity\Assets\StoreLogo.png: 90BD194CA4A7CFFF3E8B8222229857FB
 MixedRealityToolkit-Unity\Assets\Wide310x150Logo.scale-200.png: C96846A80DF667F87355569CD816192D
+MixedRealityToolkit-Unity\obj\x86\Debug\MixedRealityToolkit-Unity.csproj.CopyComplete: D41D8CD98F00B204E9800998ECF8427E
 MixedRealityToolkit-Unity\Properties\Default.rd.xml: 72EB282657164E79A1C42F6240984826

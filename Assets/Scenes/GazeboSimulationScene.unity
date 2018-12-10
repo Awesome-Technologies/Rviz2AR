@@ -734,7 +734,6 @@ GameObject:
   - component: {fileID: 74159432}
   - component: {fileID: 74159431}
   - component: {fileID: 74159430}
-  - component: {fileID: 74159435}
   - component: {fileID: 74159434}
   m_Layer: 0
   m_Name: wheel_right_link
@@ -844,17 +843,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45c206c4a70bdfd4b8fff9393bf1efb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &74159435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 74159428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4145b8e125dbfd44aaef7c15ab4c0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &92982210
@@ -1153,10 +1141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NodeList: []
-  SurfaceType: 1
   SortType: 0
-  OrientType: 3
-  LayoutType: 0
   IgnoreInactiveTransforms: 1
   Radius: 2
   radialRange: 180
@@ -2135,10 +2120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NodeList: []
-  SurfaceType: 1
   SortType: 0
-  OrientType: 3
-  LayoutType: 0
   IgnoreInactiveTransforms: 1
   Radius: 2
   radialRange: 180
@@ -4551,10 +4533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NodeList: []
-  SurfaceType: 1
   SortType: 0
-  OrientType: 3
-  LayoutType: 0
   IgnoreInactiveTransforms: 1
   Radius: 0.71
   radialRange: 180
@@ -14473,7 +14452,6 @@ GameObject:
   - component: {fileID: 1653803357}
   - component: {fileID: 1653803356}
   - component: {fileID: 1653803355}
-  - component: {fileID: 1653803360}
   - component: {fileID: 1653803359}
   m_Layer: 0
   m_Name: wheel_left_link
@@ -14583,17 +14561,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45c206c4a70bdfd4b8fff9393bf1efb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1653803360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1653803353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4145b8e125dbfd44aaef7c15ab4c0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1657005986
@@ -17661,7 +17628,6 @@ GameObject:
   - component: {fileID: 2016988257}
   - component: {fileID: 2016988256}
   - component: {fileID: 2016988255}
-  - component: {fileID: 2016988254}
   - component: {fileID: 2016988253}
   - component: {fileID: 2016988252}
   - component: {fileID: 2016988251}
@@ -17669,6 +17635,7 @@ GameObject:
   - component: {fileID: 2016988259}
   - component: {fileID: 2016988260}
   - component: {fileID: 2016988261}
+  - component: {fileID: 2016988254}
   m_Layer: 0
   m_Name: RosConnector
   m_TagString: Untagged
@@ -17706,7 +17673,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2016988250}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 377f0f6df72421f43b945ef23b6b232b, type: 3}
   m_Name: 
@@ -17782,7 +17749,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2016988250}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: caa324daa2e3a0e498163929b0536bcd, type: 3}
   m_Name: 
@@ -17810,7 +17777,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2016988250}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f562e2709255bd84d8c7856ba765aadf, type: 3}
   m_Name: 
@@ -17818,15 +17785,15 @@ MonoBehaviour:
   Topic: 
   FrameId: Unity
   JointStateReaders:
-  - {fileID: 1653803360}
-  - {fileID: 74159435}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &2016988261
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2016988250}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d935e5fbc93cd8a4ea689a1cf229cb82, type: 3}
   m_Name: 

@@ -169,6 +169,9 @@ namespace HoloToolkit.Unity.SpatialMapping
                 // Rotate this object to face the user.
                 //interpolator.SetTargetRotation(Quaternion.Euler(0, cameraTransform.localEulerAngles.y, 0));
                 interpolator.SetTargetRotation(Quaternion.LookRotation(-hitinfo.normal, Vector3.up));
+
+
+                
             }
             
 
@@ -202,16 +205,7 @@ namespace HoloToolkit.Unity.SpatialMapping
                     GetComponent<NodeToParentMapper>().detachFromParent();
                     nodeIsInToolbox = false;
 
-                    //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
-                    if(this.name == "1"&& this.transform.parent == null)
-                    {
-                        var image = GameObject.Find("ImagePlane").GetComponent<Transform>();
-                        image.rotation = Quaternion.Euler((image.eulerAngles.x)*-1 - this.transform.eulerAngles.x, this.transform.eulerAngles.y, 0);
-                        GameObject.Find("ImagePlane").GetComponent<Transform>().position = this.transform.position;
-                        //GameObject.Find("ImagePlane").GetComponent<Transform>().rotation = this.transform.rotation;
-                        GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
-                    }
-                    
+                                  
                 
                 //Wenn die Node außerhalb der Toolbox ist
                 }else if (!nodeIsInToolbox)
@@ -248,6 +242,35 @@ namespace HoloToolkit.Unity.SpatialMapping
                 //Die Node wurde davor aus der Toolbox genommen und in die Umgebung eingefügt
                 else if (!nodeIsInToolbox)
                 {
+
+                    //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
+                    if (this.name == "1" && this.transform.parent == null)
+                    {
+                        var image = GameObject.Find("ImagePlane").GetComponent<Transform>();
+                        image.rotation = Quaternion.Euler((image.eulerAngles.x) * -1 - this.transform.eulerAngles.x, this.transform.eulerAngles.y, 0);
+                        GameObject.Find("ImagePlane").GetComponent<Transform>().position = this.transform.position;
+                        //GameObject.Find("ImagePlane").GetComponent<Transform>().rotation = this.transform.rotation;
+                        
+
+                        GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
+                    }
+
+                    //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
+                    if (this.name == "2" && this.transform.parent == null)
+                    {
+                        //-- Wir schalten die Visuellen Button Elemente aus
+                        this.transform.Find("ButtonVisuals").gameObject.SetActive(false);
+
+                        // --Wir machen die TopicInformation an
+                        this.transform.Find("TopicInformation").gameObject.SetActive(true);
+
+                        GameObject.Find("RosConnector").GetComponent<OdometrySubscriberInfoUpdate>().assignedButtonObject = this.gameObject;
+
+                        //-- Wir machen den Subscriber an
+                        GameObject.Find("RosConnector").GetComponent<OdometrySubscriberInfoUpdate>().enabled = true;
+                        
+                    }
+
                     nodeManager.updateCurrentSite();
                 }
 
