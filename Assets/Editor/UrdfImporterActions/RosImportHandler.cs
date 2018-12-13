@@ -53,6 +53,9 @@ namespace RosSharp.UrdfImporter
 
         public void BeginRosImport(int protocolNumber, string address, int timeout, string assetPath)
         {
+
+            Debug.Log("This is the Beginning of the import");
+
             this.protocolNumber = protocolNumber;
             this.address = address;
             this.timeout = timeout;
@@ -71,7 +74,9 @@ namespace RosSharp.UrdfImporter
 
         private void ImportAssets()
         {
-            if(!statusEvents["connected"].WaitOne(timeout * 1000))
+            Debug.Log("Starting ImportAssets");
+
+            if (!statusEvents["connected"].WaitOne(timeout * 1000))
             {
                 Debug.LogWarning("Failed to connect to ROS before timeout");
                 return;
@@ -88,12 +93,19 @@ namespace RosSharp.UrdfImporter
             if (statusEvents["robotNameReceived"].WaitOne(timeout * 1000))
             {
                 robotName = urdfImporter.RobotName;
+                Debug.Log("The RObot name we got: " + robotName);
                 localDirectory = urdfImporter.LocalDirectory;
+                Debug.Log("The Directory name we got: " + localDirectory);
             }
 
             // import URDF assets:
             if (statusEvents["resourceFilesReceived"].WaitOne(timeout * 1000))
+            {
+
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
+                //GenerateModelIfReady();
+            }
+                
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
 
@@ -102,10 +114,16 @@ namespace RosSharp.UrdfImporter
 
         public void GenerateModelIfReady()
         {
+
+
+
             if (statusEvents["resourceFilesReceived"].WaitOne(0) && !statusEvents["importComplete"].WaitOne(0))
             {
-                AssetDatabase.Refresh();
 
+                Debug.Log("Ich importiere das Modell asl GameObject!!!");
+                AssetDatabase.Refresh();
+                
+                
                 if (EditorUtility.DisplayDialog(
                     "Urdf Assets imported.",
                     "Do you want to generate a " + robotName + " GameObject now?",
@@ -113,8 +131,15 @@ namespace RosSharp.UrdfImporter
                 {
                     RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
                 }
+                
+                
+                
+                //Dashier unten wurde mit dem oberen ausgeklammerten ausgetauscht
+                //RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
 
                 statusEvents["importComplete"].Set();
+
+                
             }
         }
 

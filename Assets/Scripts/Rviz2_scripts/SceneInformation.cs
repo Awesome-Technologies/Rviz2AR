@@ -40,6 +40,8 @@ namespace RosSharp.RosBridgeClient
 
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
 
+            //get tf2_msgs/FrameGraph Service
+            //GetComponent<RosConnector>().RosSocket.CallService<rosapi.FrameGraphRequest, rosapi.FrameGraphResponse>("/tf2_msgs/FrameGraph", FrameGraphServiceCallHandler, new rosapi.FrameGraphRequest());
 
             //GetComponent<RosConnector>().RosSocket.CallService<rosapi.NodeDetailsRequest, rosapi.NodeDetailsResponse>("/rosapi/node_details", ServiceCallHandler, new rosapi.NodeDetailsRequest("/gazebo"));
 
@@ -48,8 +50,20 @@ namespace RosSharp.RosBridgeClient
 
             //script.updateToolbox(nodenames);
             //wir erstellen nodes aus den Nodenamen, die wir uns geben lassen
-            nodeManager.generateNodes(nodenames);
+            //nodeManager.generateNodes(nodenames);
 
+            //nodeManager.generateNodes(topicnames);
+
+            StartCoroutine(GenerateNodes());
+
+        }
+
+        IEnumerator GenerateNodes()
+        {
+            //print(Time.time);
+            yield return new WaitForSeconds(1);
+            //print(Time.time);
+            nodeManager.generateNodes(topicnames);
         }
 
         // Update is called once per frame
@@ -70,9 +84,9 @@ namespace RosSharp.RosBridgeClient
 
         private void ServiceCallHandler(rosapi.TopicsResponse message)
         {
-            //Debug.Log("+++++ Here comes the Topics: ++++++++");
+            Debug.Log("+++++ Here comes the Topics: ++++++++");
             topicnames = message.topics;
-            //Debug.Log("Topicnames hat die Länge: "+ topicnames.Length);
+            Debug.Log("Topicnames hat die Länge: "+ topicnames.Length);
             for (int i = 0; i < message.topics.Length; i++)
             {
                 Debug.Log("ROS topic: " + topicnames[i]);
@@ -80,12 +94,23 @@ namespace RosSharp.RosBridgeClient
 
             }
             readyForeTopicType = true;
-            //Debug.Log("+++++ That were the Topics: ++++++++");
+            Debug.Log("+++++ That were the Topics: ++++++++");
+
+            //nodeManager.generateNodes(topicnames);
+        }
+
+        private void FrameGraphServiceCallHandler(rosapi.FrameGraphResponse message)
+        {
+            Debug.Log("+++++ Here comes the FrameGraphResponse: ++++++++");
+            string frameYaml = message.frame_yaml;
+
+            Debug.Log("+++++ frameYaml: "+ frameYaml);
+
         }
 
 
 
-        
+
         private void GetTopicType()
         {
             for (int i = 0; i < topicnames.Length; i++)
@@ -112,7 +137,7 @@ namespace RosSharp.RosBridgeClient
             //Debug.Log("nodenames hat die Länge: " + nodenames.Length);
             for (int i = 0; i < nodenames.Length; i++)
             {
-                Debug.Log("ROS Node: " + message.nodes[i]);
+                //Debug.Log("ROS Node: " + message.nodes[i]);
                 
 
             }
