@@ -1,6 +1,7 @@
 ﻿using HoloToolkit.Unity.Collections;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
 
@@ -9,12 +10,17 @@ namespace RosSharp.RosBridgeClient
     public class SceneInformation : MonoBehaviour
     {
 
-        //zum Testen eingefügt: Hier sollen die Namen der Nodes gespeichert werden.
-        //public static string[] nodenames = new string[14];
         public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
-        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-        //public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        
+        //Names of the topics that we get from ROS
         public static string[] topicnames;
+
+        //Tyes der verschiedenen TOpics
+        public static List<string> topictypes = new List<string>();
+
+        //Dictionary of Topic names and Date types ot the topics
+        public Dictionary<string, string> TopicsAndDataTypes = new Dictionary<string, string>();
+        public string currentTopic;
         //private bool readyForeNodeDetails = false;
         private bool readyForeTopicType = false;
         private string currentNode;
@@ -38,7 +44,7 @@ namespace RosSharp.RosBridgeClient
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicsRequest, rosapi.TopicsResponse>("/rosapi/topics", ServiceCallHandler, new rosapi.TopicsRequest());
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
 
-            GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
+            GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
 
             //get tf2_msgs/FrameGraph Service
             //GetComponent<RosConnector>().RosSocket.CallService<rosapi.FrameGraphRequest, rosapi.FrameGraphResponse>("/tf2_msgs/FrameGraph", FrameGraphServiceCallHandler, new rosapi.FrameGraphRequest());
@@ -60,9 +66,18 @@ namespace RosSharp.RosBridgeClient
 
         IEnumerator GenerateNodes()
         {
+            
             //print(Time.time);
             yield return new WaitForSeconds(1);
             //print(Time.time);
+            StartCoroutine(GetTopicType());
+            
+            yield return new WaitForSeconds(1);
+
+            foreach (KeyValuePair<string, string> kvp in TopicsAndDataTypes)
+            {
+                Debug.Log(kvp.Key + "has the type: " + kvp.Value);
+            }
             nodeManager.generateNodes(topicnames);
         }
 
@@ -84,17 +99,17 @@ namespace RosSharp.RosBridgeClient
 
         private void ServiceCallHandler(rosapi.TopicsResponse message)
         {
-            Debug.Log("+++++ Here comes the Topics: ++++++++");
+            //Debug.Log("+++++ Here comes the Topics: ++++++++");
             topicnames = message.topics;
             Debug.Log("Topicnames hat die Länge: "+ topicnames.Length);
             for (int i = 0; i < message.topics.Length; i++)
             {
-                Debug.Log("ROS topic: " + topicnames[i]);
+                //Debug.Log("ROS topic: " + topicnames[i]);
                 //GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
 
             }
             readyForeTopicType = true;
-            Debug.Log("+++++ That were the Topics: ++++++++");
+            //Debug.Log("+++++ That were the Topics: ++++++++");
 
             //nodeManager.generateNodes(topicnames);
         }
@@ -111,20 +126,49 @@ namespace RosSharp.RosBridgeClient
 
 
 
-        private void GetTopicType()
+        IEnumerator GetTopicType()
         {
+            Debug.Log("GetTopicType: topicnames.length" + topicnames.Length);
             for (int i = 0; i < topicnames.Length; i++)
             {
-                Debug.Log("ROS Topic: " + topicnames[i]);
-                GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", ServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
+                currentTopic = topicnames[i];
+                yield return StartCoroutine(TopicNamyAndType(topicnames[i]));
+                /*
+                Task.Run(async () => {
+
+                    await Task.Delay(1000);
+                    currentTopic = topicnames[i];
+                    GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
+
+                    
+                    
+                });
+                */
+
+                //currentTopic = topicnames[i];
+                //GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest(topicnames[i]));
+
+
+                //Debug.Log("ROS Topic: " + topicnames[i]);
 
             }
 
         }
 
-        private void ServiceCallHandler(rosapi.TopicTypeResponse message)
+        IEnumerator TopicNamyAndType(string topic)
         {
+            GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest(topic));
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        private void TopicTypeServiceCallHandler(rosapi.TopicTypeResponse message)
+        {
+            Debug.Log("Die topic: " + currentTopic);
+
             Debug.Log("Hat den Typ: "+ message.type);
+
+            TopicsAndDataTypes.Add(currentTopic, message.type);
+            Debug.Log("+++++++++Die Topic: " + currentTopic + " hat den Typ: " + TopicsAndDataTypes[currentTopic]);
         }
 
         
