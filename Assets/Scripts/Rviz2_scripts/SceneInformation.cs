@@ -79,6 +79,7 @@ namespace RosSharp.RosBridgeClient
                 Debug.Log(kvp.Key + "has the type: " + kvp.Value);
             }
             nodeManager.generateNodes(topicnames);
+            //nodeManager.generateNodes(nodenames);
         }
 
         // Update is called once per frame

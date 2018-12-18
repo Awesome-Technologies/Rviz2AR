@@ -6,6 +6,8 @@ using UnityEngine;
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.Unity.Collections;
 using RosSharp.RosBridgeClient;
+using HoloToolkit.Unity.UX;
+using System;
 
 namespace HoloToolkit.Unity.SpatialMapping
 {
@@ -168,7 +170,7 @@ namespace HoloToolkit.Unity.SpatialMapping
 
                 // Rotate this object to face the user.
                 //interpolator.SetTargetRotation(Quaternion.Euler(0, cameraTransform.localEulerAngles.y, 0));
-                interpolator.SetTargetRotation(Quaternion.LookRotation(-hitinfo.normal, Vector3.up));
+ 
 
 
                 
@@ -196,12 +198,16 @@ namespace HoloToolkit.Unity.SpatialMapping
         {
             if (IsBeingPlaced)
             {
+                Debug.Log("Wir wollen die Node verschieben");
+
                 //--während wir dabei sind die Node zu plazieren machen wir das TagAlong der Toolbox aus, damit sie uns nicht ständig hinterherfliegt
-                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = false;
+                //GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = false;
+                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<Tagalong>().enabled = false;
 
                 //-- Wenn die Node in der TOolbox ist, dann lösen wir sie aus der Toolbox heraus
                 if (nodeIsInToolbox)
                 {
+                    Debug.Log("Die Node ist in der Toolbox");
                     GetComponent<NodeToParentMapper>().detachFromParent();
                     nodeIsInToolbox = false;
 
@@ -210,6 +216,7 @@ namespace HoloToolkit.Unity.SpatialMapping
                 //Wenn die Node außerhalb der Toolbox ist
                 }else if (!nodeIsInToolbox)
                 {
+                    Debug.Log("Die Node ist außerhalb der Toolbox, öffne letzte Seite");
                     //--Wir machen die Letzte Seite in der Toolbox auf, damit wir die Node in die Toolbox hineinlegen können.
                     nodeManager.openLastSite();
                 }
@@ -226,7 +233,8 @@ namespace HoloToolkit.Unity.SpatialMapping
             }
             else
             {
-                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = true;
+                //GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<SimpleTagalong>().enabled = true;
+                GameObject.FindGameObjectWithTag("Rviz_Toolbox").GetComponent<Tagalong>().enabled = true;
 
                 if (toolbox.GetComponent<ToolboxRaycaster>().lookingAtToolbox())
                 {
@@ -250,7 +258,9 @@ namespace HoloToolkit.Unity.SpatialMapping
                         image.rotation = Quaternion.Euler((image.eulerAngles.x) * -1 - this.transform.eulerAngles.x, this.transform.eulerAngles.y, 0);
                         GameObject.Find("ImagePlane").GetComponent<Transform>().position = this.transform.position;
                         //GameObject.Find("ImagePlane").GetComponent<Transform>().rotation = this.transform.rotation;
-                        
+                        GetComponent<NodeBoundingBoxRig>().enabled = true;
+
+
 
                         GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
                     }
@@ -268,8 +278,23 @@ namespace HoloToolkit.Unity.SpatialMapping
 
                         //-- Wir machen den Subscriber an
                         GameObject.Find("RosConnector").GetComponent<OdometrySubscriberInfoUpdate>().enabled = true;
-                        
+
+                        GetComponent<NodeBoundingBoxRig>().enabled = true;
+
                     }
+                    else
+                    {
+                        //-- Wir schalten die Visuellen Button Elemente aus
+                        this.transform.Find("ButtonVisuals").gameObject.SetActive(false);
+
+                        // --Wir machen die TopicInformation an
+                        this.transform.Find("TopicInformation").gameObject.SetActive(true);
+
+                        //--Wir machen die NoteAppBar mit den zusatzoptionen an.
+                        GetComponent<NodeBoundingBoxRig>().enabled = true;
+                    }
+
+                    
 
                     nodeManager.updateCurrentSite();
                 }
@@ -277,8 +302,18 @@ namespace HoloToolkit.Unity.SpatialMapping
                 StopPlacing();
             }
         }
+
+        internal void insertNodeByButtonpress()
+        {
+            Debug.Log(" WIR FÜGEN DIE ");
+            GetComponent<NodeToParentMapper>().attachNodeToToolbox();
+            nodeIsInToolbox = true;
+            nodeManager.updateCurrentSite();
+        }
+
         private void StartPlacing()
         {
+            Debug.Log("Wir verschieben die Node jetzt");
             var layerCacheTarget = PlaceParentOnTap ? ParentGameObjectToPlace : gameObject;
             layerCacheTarget.SetLayerRecursively(IgnoreRaycastLayer, out layerCache);
             InputManager.Instance.PushModalInputHandler(gameObject);
