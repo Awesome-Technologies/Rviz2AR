@@ -92,9 +92,7 @@ In Ubuntu type `$ ifconfig` to check the network configuration and to verify you
 
 These settings are needed so that the RosBridgeClient running in Windows, and the  [ROSBridge Server](http://wiki.ros.org/rosbridge_server?distro=kinetic) running on Ubuntu can communicate.
 
-## ROS on Ubuntu
-
-###Setting up ROS on Ubuntu VM
+## Setting up ROS on Ubuntu VM
 
 * Follow this [tutorial](http://wiki.ros.org/kinetic/Installation/Ubuntu) to install ROS Kinetic
 * Follow [this tutorial](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment) to install and configure the ROS environment
@@ -107,24 +105,17 @@ See [http://wiki.ros.org/rosbridge_suite](http://wiki.ros.org/rosbridge_suite) f
 # 4.[Gazebo](http://gazebosim.org/) Setup for VM with Turtlebot2
 This tutorial shows how to install and setup [Gazebo](http://gazebosim.org/), which is used for robot simulation in ROS.
 
-* Using the following commands, setup your Ubuntu VM to accept software from packages.osrfoundation.org and install the Gazebo7 packages
+Using the following commands, setup your Ubuntu VM to accept software from packages.osrfoundation.org and install the Gazebo7 packages
 
-```
-$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-```<br/>
-```
-$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-```<br/>
-```
-$ sudo apt-get update
-```<br/>
-```
-$ sudo apt-get install gazebo7
-```
+* ``$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'``
+* ``$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -``
+* ``$ sudo apt-get update``
+* ``$ sudo apt-get install gazebo7``
+ 
 
-* Install the required packages
+Install the required packages
 
-`$ sudo apt-get install libgazebo7-*`
+* ``$ sudo apt-get install libgazebo7-*``
 
 
 Note: Visit the [gazebosim](http://gazebosim.org/tutorials/?tut=ros_wrapper_versions) webpage and its [tutorial](http://gazebosim.org/tutorials?tut=install_ubuntu) page for more details.
@@ -141,16 +132,10 @@ This tutorial explains how to set up the example robot [TurtleBot2](https://www.
 * create a new Catkin workspace
 
 ```
-$ mkdir -p ~/catkin_ws/src```<br/>
-```
-$ cd ~/catkin_ws/src```<br/>
-```
+$ mkdir -p ~/catkin_ws/src
+$ cd ~/catkin_ws/src
 $ catkin_init_workspace
-```<br/>
-```
 $ cd ..
-```<br/>
-```
 $ catkin_make
 ```
 
