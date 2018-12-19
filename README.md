@@ -82,9 +82,12 @@ In Oracle VirtualBox, make sure the Ubuntu VM is powered off. Then open the sett
 
 
 * Host-only Adapter
+
 ![](https://raw.githubusercontent.com/wiki/siemens/ros-sharp/img/User_Inst_UbuntuOnOracleVM_HostOnlyAdapter.PNG)
 
 * Network Bridge
+
+
 ![](https://raw.githubusercontent.com/wiki/siemens/ros-sharp/img/User_Inst_UbuntuOnOracleVM_BridgedAdapter.PNG)
 In both set the Promiscuous mode to allow VMs and set the Cable Connected tag.
 
@@ -105,17 +108,19 @@ See [http://wiki.ros.org/rosbridge_suite](http://wiki.ros.org/rosbridge_suite) f
 # 4.[Gazebo](http://gazebosim.org/) Setup for VM with Turtlebot2
 This tutorial shows how to install and setup [Gazebo](http://gazebosim.org/), which is used for robot simulation in ROS.
 
-Using the following commands, setup your Ubuntu VM to accept software from packages.osrfoundation.org and install the Gazebo7 packages
+* Using the following commands, setup your Ubuntu VM to accept software from packages.osrfoundation.org and install the Gazebo7 packages
 
-* ``$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'``
-* ``$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -``
-* ``$ sudo apt-get update``
-* ``$ sudo apt-get install gazebo7``
+```
+$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+$ sudo apt-get update
+$ sudo apt-get install gazebo7
+```
  
 
-Install the required packages
+* Install the required packages
 
-* ``$ sudo apt-get install libgazebo7-*``
+``$ sudo apt-get install libgazebo7-*``
 
 
 Note: Visit the [gazebosim](http://gazebosim.org/tutorials/?tut=ros_wrapper_versions) webpage and its [tutorial](http://gazebosim.org/tutorials?tut=install_ubuntu) page for more details.
