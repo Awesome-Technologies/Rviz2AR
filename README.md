@@ -235,7 +235,7 @@ In the lauch file, add the following lines, which will start the rosbridge webso
 
 
 # Acknowledgements
-![deploy settings](/External/ReadMeImages/images/rosin_ack_logo_wide.PNG)
+![ROSin Logo](/External/ReadMeImages/images/rosin_ack_logo_wide.png)
 
 Supported by ROSIN - ROS-Industrial Quality-Assured Robot Software Components.
 More information: [rosin-project.eu](http://rosin-project.eu/))
