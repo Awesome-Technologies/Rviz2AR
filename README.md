@@ -1,25 +1,22 @@
-This document describes the Rviz2AR Project as well as how to prepare your evironment to use Rviz2AR in your Unity 3D project with ROS.
+This document describes the Rviz2AR Project as well as how to prepare your evironment to use Rviz2AR in your Unity 3D project with ROS. Rviz2AR is a [ROSIN](http://rosin-project.eu/) funded project.
 
 # Rviz2AR
 
 ## What is Rviz2AR
-The goal of this Project is to provide a stable communication for data exchange between ROS and the Microsoft Hololense as well as an integration for the game engine Unity for the creation and visualization of Robot data. The Project should be upscaleable for different hardware, allowing the use of AR and VR devices for different tasks. An Interface toolkit for robot data visualization should be developed and the capabilities of the application should be demonstrated with a showcase using industrial robot hardware running ROS.
+The goal of this project is to provide a stable communication for data exchange between ROS and the Microsoft Hololens as well as an integration for the game engine Unity for the creation and visualization of robot data. The project should be upscaleable for different hardware, allowing the use of AR and VR devices for different tasks. An interface toolkit for robot data visualization will be developed and the capabilities of the application will be demonstrated with a showcase using industrial robot hardware running ROS.
 
 ![Rviz2ARStruct](/External/ReadMeImages/images/Rviz2AR.JPG "Rviz2AR structure")
 
 The project is currently in Milestone 1 where we are working on the software module for a stable communication link between the Unity application running on AR/VR gear and ROS, enabling to send and receive live data.
 
-##How does Rviz2AR work?
+## How does Rviz2AR work?
 
-The communication infrastructure of Rviz2AR is based on the [ROS-Sharp(ROS#)](https://github.com/siemens/ros-sharp) module. [ROS#](https://github.com/siemens/ros-sharp) is using [rosbridge_suite ](https://github.com/RobotWebTools/rosbridge_suite) to provides ROS-Unity communication via JASON API using [ROSBridge Server](http://wiki.ros.org/rosbridge_server?distro=kinetic)
+The communication infrastructure of Rviz2AR is based on the [ROS-Sharp(ROS#)](https://github.com/Awesome-Technologies/ros-sharp) module originally developed by Siemens AG. ROS# is using [rosbridge_suite ](https://github.com/RobotWebTools/rosbridge_suite) to provide ROS-Unity communication via a JSON API using [ROSBridge Server](http://wiki.ros.org/rosbridge_server?distro=kinetic)
 
+It should be mentioned that, even though our Rvis2AR now provides a working data communication between Unity and ROS it is not without shortcomings. While the underlying JSON API is sufficient in supporting the exchange of small data, larger data files like camera feeds or point cloud data are not handled efficiently. To compensate for those limitations we plan to incorporate another communication link between Unity and ROS based on ROS2. To this end, we are in contact with the team of ARViz: Augmented Reality Visualizer for ROS2 by Francisco Martin Rico. Our goal would be to enhance our currently implementation with a ROS2 DDS or larger data files. Since the ARViz Project is still in active development, we will incorporate it into our project in the near future, when it is available.
 
-
-
-It should be mentioned that, even though our Rvis2AR now provides a working data communication between Unity and ROS it is not without shortcomings. While the underlying  JASON API is sufficient in supporting the exchange of small data, larger data files like camera feeds or point cloud data are not handled efficiently. To compensate those limitations we plan to incorporate another communication link between Unity and ROS based on ROS2. To this end, we are in contact with the team of ARViz: Augmented Reality Visualizer for ROS2 by Francisco Martin Rico. Our goal would be to enhance our currently implementation with a ROS2 DDS or larger data files. Since the ARViz Project is still in active development, we will incorporate it into our project in the near future, when it is available.
-
-##What is Rviz2AR capable of right now?
-Rviz2AR is still in active developmentvand and is not feature complete at the moment.
+## What is Rviz2AR capable of right now?
+Rviz2AR is still in active development and and is not feature complete at the moment.
 
 The current build serves the purpose of demonstrating the general communication infrastructue for ROS-Unity data exchange running on the Microsoft Hololense. 
 
