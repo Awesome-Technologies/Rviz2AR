@@ -233,3 +233,12 @@ In the lauch file, add the following lines, which will start the rosbridge webso
 		<param name="port" value="9090"/>
 	</include>
 
+
+# Acknowledgements
+![deploy settings](/External/ReadMeImages/images/rosin_ack_logo_wide.PNG)
+
+Supported by ROSIN - ROS-Industrial Quality-Assured Robot Software Components.
+More information: [rosin-project.eu](http://rosin-project.eu/))
+
+This project has received funding from the European Union’s Horizon 2020
+research and innovation programme under grant agreement No. 732287. 

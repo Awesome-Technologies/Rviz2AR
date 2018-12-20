@@ -30,11 +30,33 @@ namespace RosSharp.RosBridgeClient
         private ObjectCollectionNodes script;
         private NodeManager nodeManager;
 
+        private Object[] scripts;
+
 
         // Use this for initialization
         void Start()
         {
+            //test, load all the scripts from RosCommunication Folder
+            scripts = Resources.LoadAll("RosTopicSubscriber",typeof(UnityEditor.MonoScript));
 
+            Debug.Log("---Größe der scripts array:" + scripts.Length);
+
+
+            foreach (var s in scripts)
+            {
+                Debug.Log(s.name);
+                Debug.Log(s.GetType());
+                UnityEditor.MonoScript ms = (UnityEditor.MonoScript)s;
+                /*
+                Subscriber<Messages> ms = (Subscriber<Messages>)s;
+                Debug.Log(ms.GetClass());
+                ClockSubscriber cs = (ClockSubscriber)ms;
+                cs.T
+                //s.GetType ms; = (UnityEditor.MonoScript)s;
+                */
+            }
+
+            
             script = GameObject.FindGameObjectWithTag("testCubeToolbox").GetComponent<ObjectCollectionNodes>();
             nodeManager = GameObject.Find("Rviz2AR_ToolBox").GetComponent<NodeManager>();
 
@@ -44,7 +66,7 @@ namespace RosSharp.RosBridgeClient
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicsRequest, rosapi.TopicsResponse>("/rosapi/topics", ServiceCallHandler, new rosapi.TopicsRequest());
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
 
-            GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
+            //GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest("/joy"));
 
             //get tf2_msgs/FrameGraph Service
             //GetComponent<RosConnector>().RosSocket.CallService<rosapi.FrameGraphRequest, rosapi.FrameGraphResponse>("/tf2_msgs/FrameGraph", FrameGraphServiceCallHandler, new rosapi.FrameGraphRequest());
@@ -71,8 +93,16 @@ namespace RosSharp.RosBridgeClient
             yield return new WaitForSeconds(1);
             //print(Time.time);
             StartCoroutine(GetTopicType());
+
+           while(TopicsAndDataTypes.Count != topicnames.Length)
+            {
+                Debug.Log("noch nicht gleich :)");
+                yield return new WaitForSeconds(.5f);
+            }
             
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
+
+            Debug.Log("-------------TopicsAndDatatypes hat die länge: "+ TopicsAndDataTypes.Count);
 
             foreach (KeyValuePair<string, string> kvp in TopicsAndDataTypes)
             {
@@ -164,12 +194,12 @@ namespace RosSharp.RosBridgeClient
 
         private void TopicTypeServiceCallHandler(rosapi.TopicTypeResponse message)
         {
-            Debug.Log("Die topic: " + currentTopic);
+            //Debug.Log("Die topic: " + currentTopic);
 
-            Debug.Log("Hat den Typ: "+ message.type);
+            //Debug.Log("Hat den Typ: "+ message.type);
 
             TopicsAndDataTypes.Add(currentTopic, message.type);
-            Debug.Log("+++++++++Die Topic: " + currentTopic + " hat den Typ: " + TopicsAndDataTypes[currentTopic]);
+            //Debug.Log("+++++++++Die Topic: " + currentTopic + " hat den Typ: " + TopicsAndDataTypes[currentTopic]);
         }
 
         
