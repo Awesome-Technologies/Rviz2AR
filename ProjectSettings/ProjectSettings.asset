@@ -627,7 +627,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: MixedRealityToolkit-Unity
-  metroPackageVersion: 2017.4.0.0
+  metroPackageVersion: 2017.4.1.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: Microsoft

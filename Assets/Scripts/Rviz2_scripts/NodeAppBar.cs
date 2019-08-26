@@ -5,6 +5,7 @@ using HoloToolkit.Unity.Buttons;
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.Unity.Receivers;
 using HoloToolkit.Unity.SpatialMapping;
+using RosSharp.RosBridgeClient;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -246,10 +247,20 @@ namespace HoloToolkit.Unity.UX
                     // --Wir machen die TopicInformation aus
                     node.transform.Find("TopicInformation").gameObject.SetActive(false);
 
+                    if(node.name == "/camera/rgb/image_raw/compressed")
+                    {
+                        GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = false;
+                    }else if (name == "/odom")
+                    {
+                        GameObject.Find("RosConnector").GetComponent<OdometrySubscriberInfoUpdate>().enabled = false;
+                    }
+
                     //-- Wir machen hier den dazugehörigen Subscriber aus
 
                     //--Wir machen die Bounding Box der Node aus
                     node.GetComponent<NodeBoundingBoxRig>().enabled = false;
+
+
 
 
 

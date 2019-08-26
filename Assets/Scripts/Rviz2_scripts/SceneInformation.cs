@@ -1,9 +1,11 @@
 ﻿using HoloToolkit.Unity.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using System.Linq;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -11,8 +13,9 @@ namespace RosSharp.RosBridgeClient
     {
 
         public static string[] nodenames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
-        
+
         //Names of the topics that we get from ROS
+        //public static string[] topicnames = new string[54];
         public static string[] topicnames;
 
         //Tyes der verschiedenen TOpics
@@ -25,38 +28,94 @@ namespace RosSharp.RosBridgeClient
         private bool readyForeTopicType = false;
         private string currentNode;
 
-        public LinkedList<ROSNode> nodelist = new LinkedList<ROSNode>();
+        //public LinkedList<ROSNode> nodelist = new LinkedList<ROSNode>();
 
         private ObjectCollectionNodes script;
         private NodeManager nodeManager;
 
-        private Object[] scripts;
+        private UnityEngine.Object[] scriptObjects;
+        //private LinkedList<UnityEditor.MonoScript> scripts = new LinkedList<UnityEditor.MonoScript>();
+        private LinkedList<Subscriber<Message>> scripts = new LinkedList<Subscriber<Message>>();
+        
 
 
         // Use this for initialization
         void Start()
         {
+
+
             //test, load all the scripts from RosCommunication Folder
-            scripts = Resources.LoadAll("RosTopicSubscriber",typeof(UnityEditor.MonoScript));
+            //scriptObjects = Resources.LoadAll("RosTopicSubscriber",typeof(UnityEditor.MonoScript));
+            //UnityEditor.MonoScript[] monoScripts = (UnityEditor.MonoScript[])Resources.LoadAll("RosTopicSubscriber",typeof(UnityEditor.MonoScript));
+            //Subscriber<Message>[] subscriber = Resources.LoadAll<Subscriber<Message>>("RosTopicSubscriber");
+            Subscriber<Message> subscriber = Resources.Load<Subscriber<Message>>("RosTopicSubscriber/ClockSubscriber.cs");
+            //MonoScript[] scripts = (MonoScript[])Object.FindObjectsOfTypeIncludingAssets(typeof(MonoScript));
+            //ClockSubscriber cs = Resources.Load<ClockSubscriber>("RosTopicSubscriber/ClockSubscriber");
+            //ClockSubscriber cs = Resources.Load("RosTopicSubscriber/ClockSubscriber") as ClockSubscriber;
 
-            Debug.Log("---Größe der scripts array:" + scripts.Length);
+            //var sub = Resources.LoadAll("RosTopicSubscriber", typeof(UnityEditor.MonoScript)).Cast<Subscriber<Message>>().ToArray();
 
+            //Debug.Log("---Größe der scripts array:" + scriptObjects.Length);
+            //Debug.Log("---Größe der subscriber array array:" + subscriber.Length);
+            //Debug.Log("---Größe der subscriber array array:" + sub.Length);
+            //Debug.Log("---SubscriberTopic:" + cs.Topic);
+            //Debug.Log("---SubscriberTopic:" + cs.Topic);
 
-            foreach (var s in scripts)
+            /*
+            foreach (var s in scriptObjects)
             {
+                
                 Debug.Log(s.name);
                 Debug.Log(s.GetType());
-                UnityEditor.MonoScript ms = (UnityEditor.MonoScript)s;
-                /*
-                Subscriber<Messages> ms = (Subscriber<Messages>)s;
-                Debug.Log(ms.GetClass());
-                ClockSubscriber cs = (ClockSubscriber)ms;
-                cs.T
-                //s.GetType ms; = (UnityEditor.MonoScript)s;
-                */
-            }
+                Type t = s.GetType();
+                //Debug.Log(typeof(s));
+                Debug.Log(t);
+                Debug.Log("Members:");
+                System.Reflection.MemberInfo[] memberInfo = t.GetMembers();
+                foreach (System.Reflection.MemberInfo mInfo in memberInfo)
+                {
+                    Debug.Log(mInfo.ToString());
+                }
+                    */
+            /*
+        if (s.GetClass() != null && s.GetClass().IsSubclassOf(typeof(Subscriber<Message>)))
+        {
 
-            
+        }
+        */
+            /*
+                UnityEditor.MonoScript ms = (UnityEditor.MonoScript)s;
+                //Subscriber <Message> msSub = (Subscriber<Message>)s;
+
+                Debug.Log("---Class:" + ms.GetClass());
+
+                UnityEngine.ScriptableObject newScript = (UnityEngine.ScriptableObject)ScriptableObject.CreateInstance(ms.GetClass());
+
+                Type t2 = ms.GetType();
+                //Debug.Log(typeof(s));
+                Debug.Log("Members:");
+                System.Reflection.MemberInfo[] memberInfo2 = t2.GetMembers();
+                foreach (System.Reflection.MemberInfo mInfo2 in memberInfo2)
+                {
+                    Debug.Log(mInfo2.ToString());
+                }
+
+                */
+            //scripts.AddLast(ms.GetClass());
+            //scripts.AddLast(msSub);
+
+            //Debug.Log("---TOPIC OF SCRIPT:" + msSub.Topic);
+            /*
+            Subscriber<Messages> ms = (Subscriber<Messages>)s;
+            Debug.Log(ms.GetClass());
+            ClockSubscriber cs = (ClockSubscriber)ms;
+            cs.T
+            //s.GetType ms; = (UnityEditor.MonoScript)s;
+
+
+        }
+        */
+
             script = GameObject.FindGameObjectWithTag("testCubeToolbox").GetComponent<ObjectCollectionNodes>();
             nodeManager = GameObject.Find("Rviz2AR_ToolBox").GetComponent<NodeManager>();
 
@@ -88,15 +147,29 @@ namespace RosSharp.RosBridgeClient
 
         IEnumerator GenerateNodes()
         {
-            
-            //print(Time.time);
-            yield return new WaitForSeconds(1);
-            //print(Time.time);
-            StartCoroutine(GetTopicType());
 
-           while(TopicsAndDataTypes.Count != topicnames.Length)
+            //print(Time.time);
+            //yield return new WaitForSeconds(1);
+            while (!readyForeTopicType ) {
+                //print(Time.time);
+                /*
+                
+                */
+
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            readyForeTopicType = false;
+            Debug.Log("Unsere Topic Liste hat die Länge: " + topicnames.Length);
+            StartCoroutine(GetTopicType());
+            
+
+
+            while (TopicsAndDataTypes.Count != topicnames.Length)
             {
                 Debug.Log("noch nicht gleich :)");
+                Debug.Log("Wir sind bei: "+ TopicsAndDataTypes.Count);
+                
                 yield return new WaitForSeconds(.5f);
             }
             
@@ -107,6 +180,11 @@ namespace RosSharp.RosBridgeClient
             foreach (KeyValuePair<string, string> kvp in TopicsAndDataTypes)
             {
                 Debug.Log(kvp.Key + "has the type: " + kvp.Value);
+                //hier gehe ich durch die Subscriber scripts durch und schaue, ob mein Datentyp dabei ist.
+                foreach (var script in scripts)
+                {
+                    
+                }
             }
             nodeManager.generateNodes(topicnames);
             //nodeManager.generateNodes(nodenames);
@@ -115,15 +193,17 @@ namespace RosSharp.RosBridgeClient
         // Update is called once per frame
         void Update()
         {
+
             
-            /*
             if (readyForeTopicType)
             {
                 readyForeTopicType = false;
-                GetTopicType();
+                //GetTopicType();
+                nodeManager.generateNodes(topicnames);
             }
-            */
             
+           
+
         }
 
 
@@ -188,8 +268,11 @@ namespace RosSharp.RosBridgeClient
 
         IEnumerator TopicNamyAndType(string topic)
         {
+            Debug.Log("Wir bearbeiten die Topic:" + topic);
             GetComponent<RosConnector>().RosSocket.CallService<rosapi.TopicTypeRequest, rosapi.TopicTypeResponse>("/rosapi/topic_type", TopicTypeServiceCallHandler, new rosapi.TopicTypeRequest(topic));
-            yield return new WaitForSeconds(0.05f);
+            //yield return new WaitForSeconds(0.05f);
+            //yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.3f);
         }
 
         private void TopicTypeServiceCallHandler(rosapi.TopicTypeResponse message)
@@ -282,7 +365,7 @@ namespace RosSharp.RosBridgeClient
     }
 }
 
-
+/*
 namespace RosSharp.RosBridgeClient
 {
     public class ROSNode
@@ -380,3 +463,4 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+*/

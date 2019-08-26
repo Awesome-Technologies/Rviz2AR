@@ -252,21 +252,39 @@ namespace HoloToolkit.Unity.SpatialMapping
                 {
 
                     //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
-                    if (this.name == "1" && this.transform.parent == null)
+                    //if (this.name == "1" && this.transform.parent == null)
+                    if (this.name == "/camera/rgb/image_raw/compressed" && this.transform.parent == null)
                     {
+                        /*
                         var image = GameObject.Find("ImagePlane").GetComponent<Transform>();
                         image.rotation = Quaternion.Euler((image.eulerAngles.x) * -1 - this.transform.eulerAngles.x, this.transform.eulerAngles.y, 0);
                         GameObject.Find("ImagePlane").GetComponent<Transform>().position = this.transform.position;
                         //GameObject.Find("ImagePlane").GetComponent<Transform>().rotation = this.transform.rotation;
                         GetComponent<NodeBoundingBoxRig>().enabled = true;
+                        */
 
+                        
+                        //-- Wir schalten die Visuellen Button Elemente aus
+                        this.transform.Find("ButtonVisuals").gameObject.SetActive(false);
+
+                        // --Wir machen die TopicInformation an
+                        this.transform.Find("TopicInformation").gameObject.SetActive(true);
+
+                        //--Wir machen die NoteAppBar mit den zusatzoptionen an.
+                        GetComponent<NodeBoundingBoxRig>().enabled = true;
+
+                        GameObject image = this.transform.Find("TopicInformation").transform.Find("ImagePlane").gameObject;
+                        //image.SetActive(false);
+                        GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().meshRenderer = image.GetComponent<MeshRenderer>();
+                        
 
 
                         GameObject.Find("RosConnector").GetComponent<ImageSubscriber>().enabled = true;
                     }
 
+
                     //Hier aktivieren wir die Verbindung zu Ros und Informationen der Node anzuzeigen
-                    if (this.name == "2" && this.transform.parent == null)
+                    if (this.name == "/odom" && this.transform.parent == null)
                     {
                         //-- Wir schalten die Visuellen Button Elemente aus
                         this.transform.Find("ButtonVisuals").gameObject.SetActive(false);

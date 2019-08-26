@@ -14,7 +14,9 @@ ModelImporter:
     2100000: Rohr
     2100002: Scheibe
     2300000: Actor0
+    2300002: //RootNode
     3300000: Actor0
+    3300002: //RootNode
     4300000: Actor0
   externalObjects: {}
   materials:

@@ -14,7 +14,9 @@ ModelImporter:
     2100000: Rohr_007_001
     2100002: SWMaterial-1_004_002_001
     2300000: Actor0_001
+    2300002: //RootNode
     3300000: Actor0_001
+    3300002: //RootNode
     4300000: Actor0_001
   externalObjects: {}
   materials:

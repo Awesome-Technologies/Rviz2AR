@@ -174,6 +174,29 @@ public class NodeManager : MonoBehaviour {
                 NodeList[i].displayedInToolbox = true;
                 NodeList[i].transform.parent = toolboxNodes.transform;
             }
+            
+            else if (NodeList[i].Name == "/camera/rgb/image_raw/compressed")
+            {
+                GameObject prefab = GameObject.Find("ButtonCameraHolographic");
+                GameObject clone = Instantiate(prefab, this.transform);
+                clone.name = NodeList[i].Name;
+                clone.GetComponentInChildren<TextMesh>().text = NodeList[i].Name;
+                //Debug.Log("Transform der Node: " + clone.transform.ToString());
+
+                NodeList[i].NodeGameObject = clone;
+                NodeList[i].transform = clone.transform;
+                NodeList[i].displayedInToolbox = true;
+                NodeList[i].transform.parent = toolboxNodes.transform;
+
+
+
+                //NodesToDisplay.Add(NodeList[i]);
+                NodeList[i].transform.parent = toolboxNodes.transform;
+                //Debug.Log("--Neue Nodeliste: " + toolboxNodes.NodeList.Count);
+
+
+            }
+
             else
             {
                 GameObject prefab = GameObject.Find("ButtonHolographic");
@@ -185,6 +208,7 @@ public class NodeManager : MonoBehaviour {
                 NodeList[i].NodeGameObject = clone;
                 NodeList[i].transform = clone.transform;
                 NodeList[i].displayedInToolbox = true;
+                NodeList[i].transform.parent = toolboxNodes.transform;
 
 
 
