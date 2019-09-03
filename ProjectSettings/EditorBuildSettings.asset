@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/HoloToolkit-Examples/UX/Scenes/GestureInteractiveExample.unity
     guid: 129aec1ffadcd134791d142340881afb
+  - enabled: 0
+    path: Assets/HoloToolkit-Examples/SpatialMapping/Scenes/PlaneFinding.unity
+    guid: ff3ffc310666b56448176114efa2291a
+  - enabled: 0
+    path: Assets/HoloToolkit-Examples/SpatialMapping/Scenes/TapToPlace.unity
+    guid: 6b75bb485379146429e95e2a402d8129
   m_configObjects: {}
